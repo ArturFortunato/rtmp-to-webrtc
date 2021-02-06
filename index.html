@@ -14,7 +14,7 @@
         {'urls': 'stun:stun.l.google.com:19302'}
       ]
     }
-    let pc = new RTCPeerConnection()
+    let pc = new RTCPeerConnection(configuration)
     pc.ontrack = function (event) {
       var el = document.createElement(event.track.kind)
       el.srcObject = event.streams[0]
