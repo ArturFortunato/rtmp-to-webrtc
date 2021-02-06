@@ -9,6 +9,11 @@
   </body>
 
   <script>
+    const configuration = {
+      'iceServers': [
+        {'urls': 'stun:stun.l.google.com:19302'}
+      ]
+    }
     let pc = new RTCPeerConnection()
     pc.ontrack = function (event) {
       var el = document.createElement(event.track.kind)
