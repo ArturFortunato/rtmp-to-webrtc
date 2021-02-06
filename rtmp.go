@@ -18,19 +18,26 @@ import (
 
 func startRTMPServer(peerConnection *webrtc.PeerConnection, videoTrack, audioTrack *webrtc.Track) {
 	log.Println("Starting RTMP Server")
+	log.Println("[ARTUR] ON START RTMP SERVER")
 
 	tcpAddr, err := net.ResolveTCPAddr("tcp", ":1935")
 	if err != nil {
+		log.Println("[ARTUR] ON ERROR RESOLVING TCP")
+
 		log.Panicf("Failed: %+v", err)
 	}
 
 	listener, err := net.ListenTCP("tcp", tcpAddr)
 	if err != nil {
+		log.Println("[ARTUR] ON ERROR LISTENING TCP")
+
 		log.Panicf("Failed: %+v", err)
 	}
 
 	srv := rtmp.NewServer(&rtmp.ServerConfig{
 		OnConnect: func(conn net.Conn) (io.ReadWriteCloser, *rtmp.ConnConfig) {
+			log.Println("[ARTUR] ON NEW SERVER CREATED")
+
 			return conn, &rtmp.ConnConfig{
 				Handler: &Handler{
 					peerConnection: peerConnection,
@@ -56,19 +63,27 @@ type Handler struct {
 }
 
 func (h *Handler) OnServe(conn *rtmp.Conn) {
+	log.Println("[ARTUR] ON SERVE")
+
 }
 
 func (h *Handler) OnConnect(timestamp uint32, cmd *rtmpmsg.NetConnectionConnect) error {
+	log.Println("[ARTUR] ON CONNECT")
+
 	log.Printf("OnConnect: %#v", cmd)
 	return nil
 }
 
 func (h *Handler) OnCreateStream(timestamp uint32, cmd *rtmpmsg.NetConnectionCreateStream) error {
+	log.Println("[ARTUR] ON CREATE STREAM")
+
 	log.Printf("OnCreateStream: %#v", cmd)
 	return nil
 }
 
 func (h *Handler) OnPublish(timestamp uint32, cmd *rtmpmsg.NetStreamPublish) error {
+	log.Println("[ARTUR] ON PUBLISH")
+
 	log.Printf("OnPublish: %#v", cmd)
 
 	if cmd.PublishingName == "" {
@@ -78,13 +93,19 @@ func (h *Handler) OnPublish(timestamp uint32, cmd *rtmpmsg.NetStreamPublish) err
 }
 
 func (h *Handler) OnAudio(timestamp uint32, payload io.Reader) error {
+	log.Println("[ARTUR] ON AUDIO")
+
 	var audio flvtag.AudioData
 	if err := flvtag.DecodeAudioData(payload, &audio); err != nil {
+		log.Println("[ARTUR] ON AUDIO ERROR DECODE")
+
 		return err
 	}
 
 	data := new(bytes.Buffer)
 	if _, err := io.Copy(data, audio.Data); err != nil {
+		log.Println("[ARTUR] ON AUDIO ERROR COPY")
+
 		return err
 	}
 
@@ -97,6 +118,8 @@ func (h *Handler) OnAudio(timestamp uint32, payload io.Reader) error {
 const headerLengthField = 4
 
 func (h *Handler) OnVideo(timestamp uint32, payload io.Reader) error {
+	log.Println("[ARTUR] ON VIDEO")
+
 	var video flvtag.VideoData
 	if err := flvtag.DecodeVideoData(payload, &video); err != nil {
 		return err
@@ -129,5 +152,6 @@ func (h *Handler) OnVideo(timestamp uint32, payload io.Reader) error {
 }
 
 func (h *Handler) OnClose() {
+	log.Println("[ARTUR] ON CLOSE")
 	log.Printf("OnClose")
 }
