@@ -11,10 +11,11 @@
   <script>
     const configuration = {
       'iceServers': [
-        {'urls': 'stun:stun.l.google.com:19302'}
+        {urls: 'stun:stun.l.google.com:19302'},
+        {urls: 'turn:numb.viagenie.ca', username: 'eaglestream88@gmail.com', credential: 'EagleStream08'}
       ]
     }
-    let pc = new RTCPeerConnection()
+    let pc = new RTCPeerConnection(configuration)
     pc.ontrack = function (event) {
       var el = document.createElement(event.track.kind)
       el.srcObject = event.streams[0]
