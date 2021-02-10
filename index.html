@@ -9,6 +9,10 @@
   </body>
 
   <script>
+    function printAndReturnRemoteDescription(res) {
+      console.log(res);
+      return res;
+    }
     const configuration = {
       'iceServers': [
         {urls: 'stun:stun.l.google.com:19302'},
@@ -40,7 +44,7 @@
         })
       })
       .then(res => res.json())
-      .then(res => pc.setRemoteDescription(res))
+      .then(res => pc.setRemoteDescription(printAndReturnRemoteDescription(res)))
       .catch(alert)
   </script>
 </html>
