@@ -29,8 +29,13 @@
       document.getElementById('rtmpFeed').appendChild(el)
     }
 
-    pc.addTransceiver('video')
-    pc.addTransceiver('audio')
+    const video_transceiver = pc.addTransceiver('video')
+    const audio_transceiver = pc.addTransceiver('audio')
+    const video_capabilities = RTCRtpSender.getCapabilities('video')
+    const audio_capabilities = RTCRtpSender.getCapabilities('audio')
+    video_transceiver.setCodecPreferences(video_capabilities.codecs)
+    //audio_transceiver.setCodecPreferences(audio_capabilities.codecs)
+    console.log(video_capabilities)
     pc.createOffer()
       .then(offer => {
         pc.setLocalDescription(offer)
