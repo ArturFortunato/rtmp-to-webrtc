@@ -19,7 +19,7 @@ import (
 var handler Handler 
 
 //func startRTMPServer(peerConnection *webrtc.PeerConnection, videoTrack, audioTrack *webrtc.Track) {
-func startRTMPServer(videoTrack, audioTrack *webrtc.Track) {
+func startRTMPServer() {
 	log.Println("Starting RTMP Server")
 	log.Println("[ARTUR] ON START RTMP SERVER")
 
@@ -39,13 +39,11 @@ func startRTMPServer(videoTrack, audioTrack *webrtc.Track) {
 
 	handler = Handler{
 		//peerConnection: peerConnection,
-		videoTrack:     videoTrack,
-		audioTrack:     audioTrack,
+		//videoTrack:     videoTrack,
+		//audioTrack:     audioTrack,
 		videoTracks:    make(map[string][]*webrtc.Track, 0),
 		audioTracks:    make(map[string][]*webrtc.Track, 0),
 	}
-
-	addNewClient("100", videoTrack, audioTrack)
 
 	srv := rtmp.NewServer(&rtmp.ServerConfig{
 		OnConnect: func(conn net.Conn) (io.ReadWriteCloser, *rtmp.ConnConfig) {

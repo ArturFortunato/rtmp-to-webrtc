@@ -13,6 +13,8 @@
 	func main() {
 		rand.Seed(time.Now().UTC().UnixNano())
 		
+		go startRTMPServer()
+
 		http.Handle("/", http.FileServer(http.Dir(".")))
 		http.HandleFunc("/createPeerConnection", createPeerConnection)
 		panic(http.ListenAndServe(":8080", nil))
@@ -22,6 +24,7 @@
 	func createPeerConnection(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
 		peerConnection, err := webrtc.NewPeerConnection(webrtc.Configuration{})
 		if err != nil {
 			panic(err)
@@ -71,8 +74,6 @@
 			panic(err)
 		}
 		log.Println(peerConnection)
-		
-		go startRTMPServer(videoTrack, audioTrack)
 
-		log.Println("YESS")
+		addNewClient("100",  videoTrack, audioTrack)
 	}
