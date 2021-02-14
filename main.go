@@ -73,4 +73,6 @@
 		log.Println(peerConnection)
 		
 		go startRTMPServer(videoTrack, audioTrack)
+
+		log.Println("YESS")
 	}

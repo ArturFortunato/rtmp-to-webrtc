@@ -16,6 +16,7 @@ import (
 	rtmpmsg "github.com/yutopp/go-rtmp/message"
 )
 
+var handler Handler 
 
 //func startRTMPServer(peerConnection *webrtc.PeerConnection, videoTrack, audioTrack *webrtc.Track) {
 func startRTMPServer(videoTrack, audioTrack *webrtc.Track) {
@@ -36,16 +37,20 @@ func startRTMPServer(videoTrack, audioTrack *webrtc.Track) {
 		log.Panicf("Failed: %+v", err)
 	}
 
+	handler = Handler{
+		//peerConnection: peerConnection,
+		videoTrack:     videoTrack,
+		audioTrack:     audioTrack,
+		videoTracks:    make(map[string][]*webrtc.Track, 0),
+		audioTracks:    make(map[string][]*webrtc.Track, 0),
+	}
+
 	srv := rtmp.NewServer(&rtmp.ServerConfig{
 		OnConnect: func(conn net.Conn) (io.ReadWriteCloser, *rtmp.ConnConfig) {
 			log.Println("[ARTUR] ON NEW STREAM RECEIVED")
 
 			return conn, &rtmp.ConnConfig{
-				Handler: &Handler{
-					//peerConnection: peerConnection,
-					videoTrack:     videoTrack,
-					audioTrack:     audioTrack,
-				},
+				Handler: &handler,
 
 				ControlState: rtmp.StreamControlStateConfig{
 					DefaultBandwidthWindowSize: 6 * 1024 * 1024 / 8,
@@ -58,16 +63,23 @@ func startRTMPServer(videoTrack, audioTrack *webrtc.Track) {
 	}
 }
 
-func addNewClient(eventId int,  videoTrack, audioTrack *webrtc.Track) {
+func addNewClient(eventId string,  videoTrack, audioTrack *webrtc.Track) {
 	log.Println("[ARTUR] NEW CLIENT FOR EVENT")
 	log.Println(eventId)
 	
+	if _, ok := handler.videoTracks[eventId]; !ok {
+		handler.videoTracks[eventId] = make([]*webrtc.Track, 0)	
+	}
+	handler.videoTracks[eventId] = append(handler.videoTracks[eventId], videoTrack)
+
 }
 
 type Handler struct {
 	rtmp.DefaultHandler
 	//peerConnection         *webrtc.PeerConnection
 	videoTrack, audioTrack *webrtc.Track
+	videoTracks map[string][]*webrtc.Track
+	audioTracks map[string][]*webrtc.Track
 }
 
 func (h *Handler) OnServe(conn *rtmp.Conn) {
