@@ -7,7 +7,6 @@ import (
 	"log"
 	"net"
 	"time"
-	"fmt"
 
 	"github.com/pion/webrtc/v2"
 	"github.com/pion/webrtc/v2/pkg/media"
@@ -18,7 +17,8 @@ import (
 )
 
 
-func startRTMPServer(peerConnection *webrtc.PeerConnection, videoTrack, audioTrack *webrtc.Track) {
+//func startRTMPServer(peerConnection *webrtc.PeerConnection, videoTrack, audioTrack *webrtc.Track) {
+func startRTMPServer(videoTrack, audioTrack *webrtc.Track) {
 	log.Println("Starting RTMP Server")
 	log.Println("[ARTUR] ON START RTMP SERVER")
 
@@ -42,7 +42,7 @@ func startRTMPServer(peerConnection *webrtc.PeerConnection, videoTrack, audioTra
 
 			return conn, &rtmp.ConnConfig{
 				Handler: &Handler{
-					peerConnection: peerConnection,
+					//peerConnection: peerConnection,
 					videoTrack:     videoTrack,
 					audioTrack:     audioTrack,
 				},
@@ -59,13 +59,14 @@ func startRTMPServer(peerConnection *webrtc.PeerConnection, videoTrack, audioTra
 }
 
 func addNewClient(eventId int,  videoTrack, audioTrack *webrtc.Track) {
-	fmt.printf("[ARTUR] NEW CLIENT FOR EVENT #%d", eventId)
+	log.Println("[ARTUR] NEW CLIENT FOR EVENT")
+	log.Println(eventId)
 	
 }
 
 type Handler struct {
 	rtmp.DefaultHandler
-	peerConnection         *webrtc.PeerConnection
+	//peerConnection         *webrtc.PeerConnection
 	videoTrack, audioTrack *webrtc.Track
 }
 

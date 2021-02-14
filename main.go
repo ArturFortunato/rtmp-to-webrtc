@@ -72,5 +72,5 @@
 		}
 		log.Println(peerConnection)
 		
-		go startRTMPServer(peerConnection, 46, videoTrack, audioTrack)
+		go startRTMPServer(videoTrack, audioTrack)
 	}
