@@ -7,6 +7,7 @@ import (
 	"log"
 	"net"
 	"time"
+	"fmt"
 
 	"github.com/pion/webrtc/v2"
 	"github.com/pion/webrtc/v2/pkg/media"
@@ -15,6 +16,7 @@ import (
 	"github.com/yutopp/go-rtmp"
 	rtmpmsg "github.com/yutopp/go-rtmp/message"
 )
+
 
 func startRTMPServer(peerConnection *webrtc.PeerConnection, videoTrack, audioTrack *webrtc.Track) {
 	log.Println("Starting RTMP Server")
@@ -36,7 +38,7 @@ func startRTMPServer(peerConnection *webrtc.PeerConnection, videoTrack, audioTra
 
 	srv := rtmp.NewServer(&rtmp.ServerConfig{
 		OnConnect: func(conn net.Conn) (io.ReadWriteCloser, *rtmp.ConnConfig) {
-			log.Println("[ARTUR] ON NEW SERVER CREATED")
+			log.Println("[ARTUR] ON NEW STREAM RECEIVED")
 
 			return conn, &rtmp.ConnConfig{
 				Handler: &Handler{
@@ -56,6 +58,11 @@ func startRTMPServer(peerConnection *webrtc.PeerConnection, videoTrack, audioTra
 	}
 }
 
+func addNewClient(eventId int,  videoTrack, audioTrack *webrtc.Track) {
+	fmt.printf("[ARTUR] NEW CLIENT FOR EVENT #%d", eventId)
+	
+}
+
 type Handler struct {
 	rtmp.DefaultHandler
 	peerConnection         *webrtc.PeerConnection
@@ -63,7 +70,7 @@ type Handler struct {
 }
 
 func (h *Handler) OnServe(conn *rtmp.Conn) {
-	log.Println("[ARTUR] ON SERVE")
+	log.Println("[ARTUR] STARTED SERVING VIDEO")
 
 }
 
@@ -85,7 +92,10 @@ func (h *Handler) OnPublish(timestamp uint32, cmd *rtmpmsg.NetStreamPublish) err
 	log.Println("[ARTUR] ON PUBLISH")
 
 	log.Printf("OnPublish: %#v", cmd)
-
+	
+	log.Println("[NEW ARTUR]")
+	log.Println(cmd)
+	log.Println("[NEW ARTUR]")
 	if cmd.PublishingName == "" {
 		return errors.New("PublishingName is empty")
 	}
@@ -93,7 +103,6 @@ func (h *Handler) OnPublish(timestamp uint32, cmd *rtmpmsg.NetStreamPublish) err
 }
 
 func (h *Handler) OnAudio(timestamp uint32, payload io.Reader) error {
-	log.Println("[ARTUR] ON AUDIO")
 
 	var audio flvtag.AudioData
 	if err := flvtag.DecodeAudioData(payload, &audio); err != nil {
@@ -109,6 +118,7 @@ func (h *Handler) OnAudio(timestamp uint32, payload io.Reader) error {
 		return err
 	}
 
+
 	return h.audioTrack.WriteSample(media.Sample{
 		Data:    data.Bytes(),
 		Samples: media.NSamples(20*time.Millisecond, 48000),
@@ -118,7 +128,6 @@ func (h *Handler) OnAudio(timestamp uint32, payload io.Reader) error {
 const headerLengthField = 4
 
 func (h *Handler) OnVideo(timestamp uint32, payload io.Reader) error {
-	log.Println("[ARTUR] ON VIDEO")
 
 	var video flvtag.VideoData
 	if err := flvtag.DecodeVideoData(payload, &video); err != nil {

@@ -36,10 +36,12 @@
     video_transceiver.setCodecPreferences(video_capabilities.codecs)
     //audio_transceiver.setCodecPreferences(audio_capabilities.codecs)
     console.log(video_capabilities)
+    console.log(audio_capabilities)
     pc.createOffer()
       .then(offer => {
+	console.log(offer)
         pc.setLocalDescription(offer)
-        return fetch(`/createPeerConnection`, {
+        return fetch('/createPeerConnection', {
           method: 'post',
           headers: {
             'Accept': 'application/json, text/plain, */*',
