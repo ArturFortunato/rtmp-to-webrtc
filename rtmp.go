@@ -61,6 +61,8 @@ func startRTMPServer(videoTrack, audioTrack *webrtc.Track) {
 	if err := srv.Serve(listener); err != nil {
 		log.Panicf("Failed: %+v", err)
 	}
+
+	addNewClient("100", videoTrack, audioTrack)
 }
 
 func addNewClient(eventId string,  videoTrack, audioTrack *webrtc.Track) {
@@ -70,14 +72,21 @@ func addNewClient(eventId string,  videoTrack, audioTrack *webrtc.Track) {
 	if _, ok := handler.videoTracks[eventId]; !ok {
 		handler.videoTracks[eventId] = make([]*webrtc.Track, 0)	
 	}
+
+	if _, ok := handler.audioTracks[eventId]; !ok {
+		handler.audioTracks[eventId] = make([]*webrtc.Track, 0)	
+	}
+
 	handler.videoTracks[eventId] = append(handler.videoTracks[eventId], videoTrack)
+	handler.audioTracks[eventId] = append(handler.audioTracks[eventId], audioTrack)
 
 }
 
 type Handler struct {
 	rtmp.DefaultHandler
 	//peerConnection         *webrtc.PeerConnection
-	videoTrack, audioTrack *webrtc.Track
+	videoTrack *webrtc.Track
+	audioTrack *webrtc.Track
 	videoTracks map[string][]*webrtc.Track
 	audioTracks map[string][]*webrtc.Track
 }
@@ -104,11 +113,6 @@ func (h *Handler) OnCreateStream(timestamp uint32, cmd *rtmpmsg.NetConnectionCre
 func (h *Handler) OnPublish(timestamp uint32, cmd *rtmpmsg.NetStreamPublish) error {
 	log.Println("[ARTUR] ON PUBLISH")
 
-	log.Printf("OnPublish: %#v", cmd)
-	
-	log.Println("[NEW ARTUR]")
-	log.Println(cmd)
-	log.Println("[NEW ARTUR]")
 	if cmd.PublishingName == "" {
 		return errors.New("PublishingName is empty")
 	}
@@ -132,10 +136,21 @@ func (h *Handler) OnAudio(timestamp uint32, payload io.Reader) error {
 	}
 
 
-	return h.audioTrack.WriteSample(media.Sample{
-		Data:    data.Bytes(),
-		Samples: media.NSamples(20*time.Millisecond, 48000),
-	})
+	for i := 0; i < len(handler.audioTracks["100"]); i++ {
+		err := handler.audioTracks["100"][i].WriteSample(media.Sample{
+			Data:    data.Bytes(),
+			Samples: media.NSamples(20*time.Millisecond, 48000),
+		})
+
+		if err != nil {
+			log.Println("[ARTUR] ERROR WRITING AUDIO")
+			return err
+		}
+	}
+
+	return nil
+
+	
 }
 
 const headerLengthField = 4
@@ -167,10 +182,19 @@ func (h *Handler) OnVideo(timestamp uint32, payload io.Reader) error {
 		offset += int(bufferLength)
 	}
 
-	return h.videoTrack.WriteSample(media.Sample{
-		Data:    outBuf,
-		Samples: media.NSamples(time.Second/30, 90000),
-	})
+	for i := 0; i < len(handler.videoTracks["100"]); i++ {
+		err := handler.videoTracks["100"][i].WriteSample(media.Sample{
+			Data:    outBuf,
+			Samples: media.NSamples(time.Second/30, 90000),
+		})
+
+		if err != nil {
+			log.Println("[ARTUR] ERROR WRITING VIDEO")
+			return err	
+		}
+	}
+
+	return nil
 }
 
 func (h *Handler) OnClose() {
