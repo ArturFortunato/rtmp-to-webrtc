@@ -45,6 +45,8 @@ func startRTMPServer(videoTrack, audioTrack *webrtc.Track) {
 		audioTracks:    make(map[string][]*webrtc.Track, 0),
 	}
 
+	addNewClient("100", videoTrack, audioTrack)
+
 	srv := rtmp.NewServer(&rtmp.ServerConfig{
 		OnConnect: func(conn net.Conn) (io.ReadWriteCloser, *rtmp.ConnConfig) {
 			log.Println("[ARTUR] ON NEW STREAM RECEIVED")
@@ -61,8 +63,6 @@ func startRTMPServer(videoTrack, audioTrack *webrtc.Track) {
 	if err := srv.Serve(listener); err != nil {
 		log.Panicf("Failed: %+v", err)
 	}
-
-	addNewClient("100", videoTrack, audioTrack)
 }
 
 func addNewClient(eventId string,  videoTrack, audioTrack *webrtc.Track) {
