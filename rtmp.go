@@ -125,7 +125,9 @@ func (h *Handler) OnAudio(timestamp uint32, payload io.Reader) error {
 
 		return err
 	}
-
+	
+	//log.Println(audio.Data)
+	//log.Println(timestamp)
 	data := new(bytes.Buffer)
 	if _, err := io.Copy(data, audio.Data); err != nil {
 		log.Println("[ARTUR] ON AUDIO ERROR COPY")
