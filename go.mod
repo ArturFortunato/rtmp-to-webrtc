@@ -3,7 +3,7 @@ module github.com/sean-der/rtmp-to-webrtc
 go 1.14
 
 require (
-	github.com/ArturFortunato/go-rtmp v0.0.0-20210215145853-147ab58ed7a2
+	github.com/ArturFortunato/go-rtmp v0.0.0-20210216185807-7f5d828a199a
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/google/go-cmp v0.5.4 // indirect
 	github.com/google/uuid v1.2.0 // indirect

@@ -43,6 +43,7 @@ func startRTMPServer() {
 		//audioTrack:     audioTrack,
 		videoTracks:    make(map[string][]*webrtc.Track, 0),
 		audioTracks:    make(map[string][]*webrtc.Track, 0),
+		publishingName: "",
 	}
 
 	srv := rtmp.NewServer(&rtmp.ServerConfig{
@@ -87,6 +88,7 @@ type Handler struct {
 	audioTrack *webrtc.Track
 	videoTracks map[string][]*webrtc.Track
 	audioTracks map[string][]*webrtc.Track
+	publishingName string
 }
 
 func (h *Handler) OnServe(conn *rtmp.Conn) {
@@ -110,6 +112,8 @@ func (h *Handler) OnCreateStream(timestamp uint32, cmd *rtmpmsg.NetConnectionCre
 
 func (h *Handler) OnPublish(timestamp uint32, cmd *rtmpmsg.NetStreamPublish) error {
 	log.Println("[ARTUR] ON PUBLISH")
+	
+	h.publishingName = cmd.PublishingName
 
 	if cmd.PublishingName == "" {
 		return errors.New("PublishingName is empty")
@@ -126,8 +130,9 @@ func (h *Handler) OnAudio(timestamp uint32, payload io.Reader) error {
 		return err
 	}
 	
-	//log.Println(audio.Data)
-	//log.Println(timestamp)
+	log.Println("======NEW AUDIO")
+	log.Println(h.publishingName)	
+	
 	data := new(bytes.Buffer)
 	if _, err := io.Copy(data, audio.Data); err != nil {
 		log.Println("[ARTUR] ON AUDIO ERROR COPY")
@@ -150,7 +155,6 @@ func (h *Handler) OnAudio(timestamp uint32, payload io.Reader) error {
 
 	return nil
 
-	
 }
 
 const headerLengthField = 4
@@ -161,6 +165,9 @@ func (h *Handler) OnVideo(timestamp uint32, payload io.Reader) error {
 	if err := flvtag.DecodeVideoData(payload, &video); err != nil {
 		return err
 	}
+
+	log.Println("======NEW VIDEO")
+	log.Println(h.publishingName)
 
 	data := new(bytes.Buffer)
 	if _, err := io.Copy(data, video.Data); err != nil {
