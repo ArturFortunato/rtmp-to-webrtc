@@ -6,17 +6,18 @@ import (
 	"io"
 	"log"
 	"net"
+
 	//"time"
 
 	"github.com/pion/webrtc/v2"
 	//"github.com/pion/webrtc/v2/pkg/media"
 	//"github.com/pkg/errors"
 	//flvtag "github.com/yutopp/go-flv/tag"
-	"github.com/yutopp/go-rtmp"
+	"github.com/ArturFortunato/go-rtmp"
 	//rtmpmsg "github.com/yutopp/go-rtmp/message"
 )
 
-var handler Handler 
+var handler Handler
 
 func startRTMPServer() {
 	log.Println("[ARTUR] ON START RTMP SERVER")
@@ -72,7 +73,7 @@ func addNewClient(eventId string, audioTrack, videoTrack *webrtc.Track) {
 
 // 		return err
 // 	}
-	
+
 // 	data := new(bytes.Buffer)
 // 	if _, err := io.Copy(data, audio.Data); err != nil {
 // 		log.Println("[ARTUR] ON AUDIO ERROR COPY")
@@ -80,18 +81,17 @@ func addNewClient(eventId string, audioTrack, videoTrack *webrtc.Track) {
 // 		return err
 // 	}
 
+// for i := 0; i < len(handler.audioTracks["100"]); i++ {
+// 	err := handler.audioTracks["100"][i].WriteSample(media.Sample{
+// 		Data:    data.Bytes(),
+// 		Samples: media.NSamples(20*time.Millisecond, 48000),
+// 	})
 
-	// for i := 0; i < len(handler.audioTracks["100"]); i++ {
-	// 	err := handler.audioTracks["100"][i].WriteSample(media.Sample{
-	// 		Data:    data.Bytes(),
-	// 		Samples: media.NSamples(20*time.Millisecond, 48000),
-	// 	})
-
-	// 	if err != nil {
-	// 		log.Println("[ARTUR] ERROR WRITING AUDIO")
-	// 		return err
-	// 	}
-	// }
+// 	if err != nil {
+// 		log.Println("[ARTUR] ERROR WRITING AUDIO")
+// 		return err
+// 	}
+// }
 
 // 	return nil
 
@@ -106,10 +106,10 @@ func addNewClient(eventId string, audioTrack, videoTrack *webrtc.Track) {
 // 		return err
 // 	}
 
-	// data := new(bytes.Buffer)
-	// if _, err := io.Copy(data, video.Data); err != nil {
-	// 	return err
-	// }
+// data := new(bytes.Buffer)
+// if _, err := io.Copy(data, video.Data); err != nil {
+// 	return err
+// }
 
 // 	outBuf := []byte{}
 // 	videoBuffer := data.Bytes()
@@ -134,7 +134,7 @@ func addNewClient(eventId string, audioTrack, videoTrack *webrtc.Track) {
 
 // 		if err != nil {
 // 			log.Println("[ARTUR] ERROR WRITING VIDEO")
-// 			return err	
+// 			return err
 // 		}
 // 	}
 

@@ -2,15 +2,15 @@ package main
 
 import (
 	"bytes"
+	"encoding/binary"
 	"io"
 	"log"
-	"encoding/binary"
 
+	"github.com/ArturFortunato/go-rtmp"
+	rtmpmsg "github.com/ArturFortunato/go-rtmp/message"
 	"github.com/pion/webrtc/v2"
 	"github.com/pkg/errors"
 	flvtag "github.com/yutopp/go-flv/tag"
-	"github.com/yutopp/go-rtmp"
-	rtmpmsg "github.com/yutopp/go-rtmp/message"
 )
 
 var _ rtmp.Handler = (*Handler)(nil)
@@ -103,12 +103,12 @@ func (h *Handler) OnSetDataFrame(timestamp uint32, data *rtmpmsg.NetStreamSetDat
 }
 
 func (h *Handler) OnAudio(timestamp uint32, payload io.Reader) error {
-	
+
 	var audio flvtag.AudioData
 	if err := flvtag.DecodeAudioData(payload, &audio); err != nil {
 		return err
 	}
-	
+
 	data := new(bytes.Buffer)
 	if _, err := io.Copy(data, audio.Data); err != nil {
 		return err
@@ -152,15 +152,14 @@ func (h *Handler) OnVideo(timestamp uint32, payload io.Reader) error {
 
 		offset += int(bufferLength)
 	}
-	
-	
+
 	video.Data = data
 	_ = h.pub.Publish(
 		&flvtag.FlvTag{
 			TagType:   flvtag.TagTypeVideo,
 			Timestamp: timestamp,
 			Data:      &video,
-		}, 
+		},
 		outBuf,
 	)
 
