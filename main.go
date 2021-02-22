@@ -2,7 +2,6 @@
 
 	import (
 		"encoding/json"
-		"log"
 		"math/rand"
 		"net/http"
 		"time"
@@ -73,7 +72,7 @@
 		if _, err := w.Write(response); err != nil {
 			panic(err)
 		}
-		log.Println(peerConnection)
 
-		addNewClient("100",  videoTrack, audioTrack)
+		eventID := r.URL.Query()["eventID"][0]
+		addNewClient(eventID, audioTrack, videoTrack)
 	}
