@@ -3,7 +3,7 @@ module github.com/sean-der/rtmp-to-webrtc
 go 1.14
 
 require (
-	github.com/ArturFortunato/go-rtmp v0.0.0-20210222152820-dd9be91743ef
+	github.com/ArturFortunato/go-rtmp v0.0.0-20210223155358-6790eaada302
 	github.com/fortytw2/leaktest v1.3.0 // indirect
 	github.com/golang/mock v1.5.0 // indirect
 	github.com/golang/protobuf v1.4.3 // indirect
@@ -32,7 +32,7 @@ require (
 	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83 // indirect
 	golang.org/x/net v0.0.0-20210220033124-5f55cee0dc0d // indirect
 	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a // indirect
-	golang.org/x/sys v0.0.0-20210220050731-9a76102bfb43 // indirect
+	golang.org/x/sys v0.0.0-20210223095934-7937bea0104d // indirect
 	golang.org/x/text v0.3.5 // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect

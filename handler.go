@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 	"io"
 	"log"
+	"strconv"
 
 	"github.com/ArturFortunato/go-rtmp"
 	rtmpmsg "github.com/ArturFortunato/go-rtmp/message"
@@ -102,7 +103,7 @@ func (h *Handler) OnSetDataFrame(timestamp uint32, data *rtmpmsg.NetStreamSetDat
 	return nil
 }
 
-func (h *Handler) OnAudio(timestamp uint32, payload io.Reader) error {
+func (h *Handler) OnAudio(timestamp uint32, payload io.Reader, streamID uint32) error {
 
 	var audio flvtag.AudioData
 	if err := flvtag.DecodeAudioData(payload, &audio); err != nil {
@@ -115,7 +116,10 @@ func (h *Handler) OnAudio(timestamp uint32, payload io.Reader) error {
 	}
 	//audio.Data = data
 
-	_ = h.pub.Publish(&flvtag.FlvTag{
+	eventID := strconv.FormatUint(uint64(streamID), 10) 
+	pubsub, _ := h.relayService.GetPubsub(eventID)
+
+	_ = pubsub.GetPub().Publish(&flvtag.FlvTag{
 		TagType:   flvtag.TagTypeAudio,
 		Timestamp: timestamp,
 		Data:      &audio,
@@ -126,7 +130,7 @@ func (h *Handler) OnAudio(timestamp uint32, payload io.Reader) error {
 
 const headerLengthField = 4
 
-func (h *Handler) OnVideo(timestamp uint32, payload io.Reader) error {
+func (h *Handler) OnVideo(timestamp uint32, payload io.Reader, streamID uint32) error {
 
 	var video flvtag.VideoData
 	if err := flvtag.DecodeVideoData(payload, &video); err != nil {
@@ -154,8 +158,11 @@ func (h *Handler) OnVideo(timestamp uint32, payload io.Reader) error {
 	}
 
 	video.Data = data
-	_ = h.pub.Publish(
-		&flvtag.FlvTag{
+
+	eventID := strconv.FormatUint(uint64(streamID), 10) 
+	pubsub, _ := h.relayService.GetPubsub(eventID)
+
+	_ = pubsub.GetPub().Publish(&flvtag.FlvTag{
 			TagType:   flvtag.TagTypeVideo,
 			Timestamp: timestamp,
 			Data:      &video,

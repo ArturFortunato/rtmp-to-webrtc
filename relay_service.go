@@ -37,7 +37,6 @@ func (s *RelayService) NewPubsub(key string) (*Pubsub, error) {
 }
 
 func (s *RelayService) GetPubsub(key string) (*Pubsub, error) {
-	log.Println("GET PUBSUB INIT")
 
 	s.m.Lock()
 	defer s.m.Unlock()
@@ -46,7 +45,6 @@ func (s *RelayService) GetPubsub(key string) (*Pubsub, error) {
 	if !ok {
 		return nil, fmt.Errorf("Not published: %s", key)
 	}
-	log.Println("GET PUBSUB END")
 
 	return pubsub, nil
 }
