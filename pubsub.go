@@ -20,7 +20,6 @@ type Pubsub struct {
 }
 
 func NewPubsub(srv *RelayService, name string) *Pubsub {
-	log.Println("NEW PUBSUB")
 	return &Pubsub{
 		srv:  srv,
 		name: name,
@@ -30,28 +29,27 @@ func NewPubsub(srv *RelayService, name string) *Pubsub {
 }
 
 func (pb *Pubsub) Deregister() error {
-	log.Println("DEREGISTER")
-
 	pb.m.Lock()
 	defer pb.m.Unlock()
 
 	for _, sub := range pb.subs {
 		_ = sub.Close()
 	}
-	log.Println("DEREGISTER END")
 
 	return pb.srv.RemovePubsub(pb.name)
 }
 
+func (pb *Pubsub) GetPub() *Pub {
+	return pb.pub
+}
+
 func (pb *Pubsub) Pub() *Pub {
-	log.Println("NEW PUB INIT")
 
 	pub := &Pub{
 		pb: pb,
 	}
 
 	pb.pub = pub
-	log.Println("NEW PUB END")
 
 	return pub
 }
