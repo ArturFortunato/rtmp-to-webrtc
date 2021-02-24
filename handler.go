@@ -26,10 +26,6 @@ type Handler struct {
 }
 
 func (h *Handler) AddNewClient(streamID string, audioTrack, videoTrack *webrtc.Track) error {
-	/*if h.sub != nil {
-		return errors.New("Cannot play on this stream")
-	}*/
-
 	pubsub, err := h.relayService.GetPubsub(streamID)
 	if err != nil {
 		return errors.Wrap(err, "Failed to get pubsub")
@@ -51,8 +47,6 @@ func (h *Handler) OnServe(conn *rtmp.Conn) {
 func (h *Handler) OnConnect(timestamp uint32, cmd *rtmpmsg.NetConnectionConnect) error {
 	log.Printf("OnConnect: %#v", cmd)
 
-	// cmd.Command.App
-
 	return nil
 }
 
@@ -63,11 +57,6 @@ func (h *Handler) OnCreateStream(timestamp uint32, cmd *rtmpmsg.NetConnectionCre
 
 func (h *Handler) OnPublish(_ *rtmp.StreamContext, timestamp uint32, cmd *rtmpmsg.NetStreamPublish) error {
 	log.Printf("OnPublish: %#v", cmd)
-
-	// WTF is this?
-	/*if h.sub != nil {
-		return errors.New("Cannot publish to this stream")
-	}*/
 
 	if cmd.PublishingName == "" {
 		return errors.New("PublishingName is empty")
@@ -113,7 +102,6 @@ func (h *Handler) OnAudio(timestamp uint32, payload io.Reader) error {
 	if _, err := io.Copy(data, audio.Data); err != nil {
 		return err
 	}
-	//audio.Data = data
 
 	_ = h.pub.Publish(&flvtag.FlvTag{
 		TagType:   flvtag.TagTypeAudio,

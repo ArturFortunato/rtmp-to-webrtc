@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"sync"
 	"log"
-	//"io"
-	//"reflect"
 
 	"github.com/pion/webrtc/v2"
 	flvtag "github.com/yutopp/go-flv/tag"
@@ -69,7 +67,6 @@ func (pb *Pubsub) Sub(audioTrack, videoTrack *webrtc.Track) *Sub {
 		videoTrack: videoTrack,
 	}
 
-	// TODO: Implement more efficient resource management
 	pb.subs = append(pb.subs, sub)
 	log.Println("NEW SUB END")
 
@@ -134,11 +131,6 @@ func (s *Sub) onEvent(flv *flvtag.FlvTag, content []byte) error {
 		return nil
 	}
 
-	/*if flv.Timestamp != 0 && s.lastTimestamp == 0 {
-		s.lastTimestamp = flv.Timestamp
-	}*/
-	//flv.Timestamp -= s.lastTimestamp
-
 	return s.eventCallback(flv, content)
 }
 
@@ -154,7 +146,6 @@ func (s *Sub) Close() error {
 
 func cloneView(flv *flvtag.FlvTag) *flvtag.FlvTag {
 
-	// Need to clone the view because Binary data will be consumed
 	v := *flv
 
 	switch flv.Data.(type) {
@@ -179,9 +170,3 @@ func cloneView(flv *flvtag.FlvTag) *flvtag.FlvTag {
 	}
 	return &v
 }
-
-
-
-			// for _, sub := range p.pb.subs {
-			// 	_ = sub.onEvent(cloneView(flv))
-			// }
