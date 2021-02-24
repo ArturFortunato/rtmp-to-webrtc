@@ -2,7 +2,6 @@
 
 	import (
 		"encoding/json"
-		"log"
 		"math/rand"
 		"net/http"
 		"time"
@@ -20,7 +19,6 @@
 		panic(http.ListenAndServe(":8080", nil))
 	}
 
-	// Add a single video track
 	func createPeerConnection(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
@@ -73,7 +71,7 @@
 		if _, err := w.Write(response); err != nil {
 			panic(err)
 		}
-		log.Println(peerConnection)
 
-		addNewClient("100",  videoTrack, audioTrack)
+		eventID := r.URL.Query()["eventID"][0]
+		addNewClient(eventID, audioTrack, videoTrack)
 	}
