@@ -13,7 +13,7 @@ import (
 var handler Handler
 
 func startRTMPServer() {
-
+	log.Println("Starting RTMP server...")
 	tcpAddr, err := net.ResolveTCPAddr("tcp", ":1935")
 	if err != nil {
 		log.Panicf("Failed: %+v", err)
