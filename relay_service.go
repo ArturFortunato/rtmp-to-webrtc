@@ -38,7 +38,7 @@ func (s *RelayService) GetPubsub(key string) (*Pubsub, error) {
 
 	pubsub, ok := s.streams[key]
 	if !ok {
-		return s.NewPubsub(key)
+		return nil, fmt.Errorf("Not published: %s", key)
 	}
 
 	return pubsub, nil
