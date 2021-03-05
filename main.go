@@ -5,6 +5,7 @@
 		"math/rand"
 		"net/http"
 		"time"
+		"log"
 
 		"github.com/pion/webrtc/v2"
 	)
@@ -16,7 +17,12 @@
 
 		http.Handle("/", http.FileServer(http.Dir(".")))
 		http.HandleFunc("/createPeerConnection", createPeerConnection)
+		http.HandleFunc("/teste", teste)
 		panic(http.ListenAndServe(":8080", nil))
+	}
+
+	func teste(w http.ResponseWriter, r *http.Request) {
+		log.Println("Received request")
 	}
 
 	func createPeerConnection(w http.ResponseWriter, r *http.Request) {
