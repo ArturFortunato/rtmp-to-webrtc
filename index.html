@@ -13,12 +13,14 @@
       console.log(res);
       return res;
     }
+
     const configuration = {
       'iceServers': [
         {urls: 'stun:stun.l.google.com:19302'},
         {urls: 'turn:18.134.143.182:3478', username: 'eaglestream88@gmail.com', credential: 'EagleStream08'}
       ]
     }
+    
     let pc = new RTCPeerConnection(configuration)
     pc.ontrack = function (event) {
       var el = document.createElement(event.track.kind)
@@ -35,13 +37,12 @@
     const audio_capabilities = RTCRtpSender.getCapabilities('audio')
     video_transceiver.setCodecPreferences(video_capabilities.codecs)
     //audio_transceiver.setCodecPreferences(audio_capabilities.codecs)
-    console.log(video_capabilities)
-    console.log(audio_capabilities)
     pc.createOffer()
       .then(offer => {
-	console.log(offer)
         pc.setLocalDescription(offer)
-        return fetch('/createPeerConnection', {
+        eventID = new URL(window.location.href).searchParams.get("eventID")
+        console.log(eventID)
+        return fetch('http://3.9.18.151:8080/createPeerConnection?eventID=' + eventID, {
           method: 'post',
           headers: {
             'Accept': 'application/json, text/plain, */*',
