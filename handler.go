@@ -27,13 +27,19 @@ type Handler struct {
 }
 
 func (h *Handler) AddNewClient(streamID string, audioTrack, videoTrack *webrtc.Track) error {
-	pubsub, err := h.relayService.GetPubsub(streamID)
+	log.Println("1")
+	var pubsub *Pubsub
+	var err error
+	pubsub, err = h.relayService.GetPubsub(streamID)
 	if err != nil {
-		return errors.Wrap(err, "Failed to get pubsub")
+		log.Println("2")
+		pubsub, _ = h.relayService.NewPubsub(streamID)
 	}
+	log.Println("3")
 
 	sub := pubsub.Sub(audioTrack, videoTrack)
 	sub.eventCallback = onEventCallback(sub)
+	log.Println("4")
 
 	h.sub = sub
 
@@ -62,10 +68,14 @@ func (h *Handler) OnPublish(_ *rtmp.StreamContext, timestamp uint32, cmd *rtmpms
 	if cmd.PublishingName == "" {
 		return errors.New("PublishingName is empty")
 	}
-
-	pubsub, err := h.relayService.NewPubsub(cmd.PublishingName)
+	var pubsub *Pubsub
+	var err error
+	pubsub, err = h.relayService.GetPubsub(cmd.PublishingName)
 	if err != nil {
-		return errors.Wrap(err, "Failed to create pubsub")
+		pubsub, err = h.relayService.NewPubsub(cmd.PublishingName)
+		if err != nil {
+			return errors.Wrap(err, "Failed to create pubsub")
+		}
 	}
 
 	pub := pubsub.Pub()

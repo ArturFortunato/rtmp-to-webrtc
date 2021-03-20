@@ -11,7 +11,6 @@ import (
 
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
-
 	go startRTMPServer()
 
 	http.Handle("/", http.FileServer(http.Dir(".")))
