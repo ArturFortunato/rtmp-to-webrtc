@@ -5,9 +5,8 @@ import (
 	"log"
 	"net"
 
-
-	"github.com/pion/webrtc/v2"
 	"github.com/ArturFortunato/go-rtmp"
+	"github.com/pion/webrtc/v2"
 )
 
 var handler Handler
@@ -48,6 +47,10 @@ func startRTMPServer() {
 	}
 }
 
-func addNewClient(eventId string, audioTrack, videoTrack *webrtc.Track) {
-	handler.AddNewClient(eventId, audioTrack, videoTrack)
+func addNewClient(eventID string, audioTrack, videoTrack *webrtc.Track) {
+	handler.AddNewClient(eventID, audioTrack, videoTrack)
+}
+
+func closeConnection(streamID string) {
+	handler.OnCloseByController(streamID)
 }

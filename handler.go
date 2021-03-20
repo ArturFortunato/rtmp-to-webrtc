@@ -104,7 +104,7 @@ func (h *Handler) OnAudio(timestamp uint32, payload io.Reader, streamID uint32) 
 		return err
 	}
 
-	eventID := strconv.FormatUint(uint64(streamID), 10) 
+	eventID := strconv.FormatUint(uint64(streamID), 10)
 	pubsub, _ := h.relayService.GetPubsub(eventID)
 
 	_ = pubsub.GetPub().Publish(&flvtag.FlvTag{
@@ -147,18 +147,30 @@ func (h *Handler) OnVideo(timestamp uint32, payload io.Reader, streamID uint32) 
 
 	video.Data = data
 
-	eventID := strconv.FormatUint(uint64(streamID), 10) 
+	eventID := strconv.FormatUint(uint64(streamID), 10)
 	pubsub, _ := h.relayService.GetPubsub(eventID)
 
 	_ = pubsub.GetPub().Publish(&flvtag.FlvTag{
-			TagType:   flvtag.TagTypeVideo,
-			Timestamp: timestamp,
-			Data:      &video,
-		},
+		TagType:   flvtag.TagTypeVideo,
+		Timestamp: timestamp,
+		Data:      &video,
+	},
 		outBuf,
 	)
 
 	return nil
+}
+
+func (h *Handler) OnCloseByController(eventID string) {
+	log.Printf("OnCloseByController")
+
+	pubsub, _ := h.relayService.GetPubsub(eventID)
+
+	pubsub.GetPub().Close()
+
+	for _, sub := range pubsub.subs {
+		sub.Close()
+	}
 }
 
 func (h *Handler) OnClose() {
