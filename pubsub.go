@@ -66,7 +66,6 @@ func (pb *Pubsub) Sub(audioTrack, videoTrack *webrtc.Track) *Sub {
 	}
 
 	pb.subs = append(pb.subs, sub)
-	log.Println("NEW SUB END")
 
 	return sub
 }
