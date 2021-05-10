@@ -42,6 +42,10 @@ func (pb *Pubsub) GetPub() *Pub {
 	return pb.pub
 }
 
+func (pb *Pubsub) GetSubsLength() int {
+	return len(pb.subs)
+}
+
 func (pb *Pubsub) Pub() *Pub {
 
 	pub := &Pub{
@@ -87,7 +91,10 @@ func (p *Pub) Publish(flv *flvtag.FlvTag, content []byte) error {
 
 
 		case *flvtag.VideoData:
+			log.Println("VIdeo data")
+			i := 0
 			for _, sub := range p.pb.subs {
+				log.Println(i)
 				data := content
 
 				_ = sub.onEvent(flv, data)

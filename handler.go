@@ -66,8 +66,6 @@ func (h *Handler) OnPublish(_ *rtmp.StreamContext, timestamp uint32, cmd *rtmpms
 		return errors.New("PublishingName is empty")
 	}
 
-	log.Println(cmd.PublishingName)
-
 	var pubsub *Pubsub
 	var err error
 	pubsub, err = h.relayService.GetPubsub(cmd.PublishingName)
@@ -158,7 +156,7 @@ func (h *Handler) OnVideo(timestamp uint32, payload io.Reader, streamID uint32) 
 
 	video.Data = data
 
-	eventID := strconv.FormatUint(uint64(streamID), 10) 
+	eventID := strconv.FormatUint(uint64(streamID), 10)
 	pubsub, _ := h.relayService.GetPubsub(eventID)
 
 	_ = pubsub.GetPub().Publish(&flvtag.FlvTag{
