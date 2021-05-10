@@ -42,10 +42,6 @@ func (pb *Pubsub) GetPub() *Pub {
 	return pb.pub
 }
 
-func (pb *Pubsub) GetSubsLength() int {
-	return len(pb.subs)
-}
-
 func (pb *Pubsub) Pub() *Pub {
 
 	pub := &Pub{
