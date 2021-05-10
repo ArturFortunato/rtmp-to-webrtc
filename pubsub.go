@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"sync"
 	"log"
 
@@ -141,29 +140,3 @@ func (s *Sub) Close() error {
 	return nil
 }
 
-func cloneView(flv *flvtag.FlvTag) *flvtag.FlvTag {
-
-	v := *flv
-
-	switch flv.Data.(type) {
-		case *flvtag.AudioData:
-			dCloned := *v.Data.(*flvtag.AudioData)
-			v.Data = &dCloned
-
-			dCloned.Data = bytes.NewBuffer(dCloned.Data.(*bytes.Buffer).Bytes())
-
-		case *flvtag.VideoData:
-			dCloned := *v.Data.(*flvtag.VideoData)
-			v.Data = &dCloned
-
-			dCloned.Data = bytes.NewBuffer(dCloned.Data.(*bytes.Buffer).Bytes())
-		
-		case *flvtag.ScriptData:
-			dCloned := *v.Data.(*flvtag.ScriptData)
-			v.Data = &dCloned
-
-		default:
-			panic("unreachable")
-	}
-	return &v
-}
