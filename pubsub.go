@@ -91,10 +91,7 @@ func (p *Pub) Publish(flv *flvtag.FlvTag, content []byte) error {
 
 
 		case *flvtag.VideoData:
-			log.Println("VIdeo data")
-			i := 0
 			for _, sub := range p.pb.subs {
-				log.Println(i)
 				data := content
 
 				_ = sub.onEvent(flv, data)
