@@ -22,18 +22,15 @@ func main() {
 }
 
 func test(w http.ResponseWriter, r *http.Request) {
-	log.Println("Testing")
 	w.Write([]byte("ABCD"))
 }
 
 func createPeerConnection(w http.ResponseWriter, r *http.Request) {
-	//TESTING=========================
 	defer func() {
 		if err := recover(); err != nil {
 			log.Println("panic occurred:", err)
 		}
 	}()
-	//TESTING=========================
 
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	peerConnection, err := webrtc.NewPeerConnection(webrtc.Configuration{})
