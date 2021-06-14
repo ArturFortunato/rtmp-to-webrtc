@@ -40,6 +40,7 @@ func (h *Handler) AddNewClient(streamID string, audioTrack, videoTrack *webrtc.T
 
 	h.sub = sub
 
+	log.Println("NOVO subs")
 	return nil
 }
 
