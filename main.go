@@ -17,11 +17,11 @@ func main() {
 
 	http.Handle("/", http.FileServer(http.Dir(".")))
 	http.HandleFunc("/createPeerConnection", createPeerConnection)
-	http.HandleFunc("/test", test)
+	http.HandleFunc("/healthCheck", healthCheck)
 	panic(http.ListenAndServe(":8080", nil))
 }
 
-func test(w http.ResponseWriter, r *http.Request) {
+func healthCheck(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("ABCD"))
 }
 
