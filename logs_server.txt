@@ -1,0 +1,40 @@
+
+2021/05/02 12:52:48 http: panic serving 127.0.0.1:34936: runtime error: index out of range [0] with length 0                                                                                                
+goroutine 6645 [running]:                                                                                                                                                                                   
+net/http.(*conn).serve.func1(0xc001a374a0)                                                                                                                                                                  
+        /usr/local/go/src/net/http/server.go:1824 +0x153                                                                                                                                                    
+panic(0x898420, 0xc001dd45e8)                                                                                                                                                                               
+        /usr/local/go/src/runtime/panic.go:971 +0x499                                                                                                                                                       
+main.createPeerConnection(0x958c30, 0xc00213a2a0, 0xc001db4900)                                                                                                                                             
+        /home/ubuntu/rtmp-to-webrtc/main.go:80 +0x834                                                                                                                                                       
+net/http.HandlerFunc.ServeHTTP(0x8ed780, 0x958c30, 0xc00213a2a0, 0xc001db4900)                                                                                                                              
+        /usr/local/go/src/net/http/server.go:2069 +0x44                                                                                                                                                     
+net/http.(*ServeMux).ServeHTTP(0xba4c20, 0x958c30, 0xc00213a2a0, 0xc001db4900)                                                                                                                              
+        /usr/local/go/src/net/http/server.go:2448 +0x1ad                                                                                                                                                    
+net/http.serverHandler.ServeHTTP(0xc0000bc1c0, 0x958c30, 0xc00213a2a0, 0xc001db4900)                                                                                                                        
+        /usr/local/go/src/net/http/server.go:2887 +0xa3                                                                                                                                                     
+net/http.(*conn).serve(0xc001a374a0, 0x959e20, 0xc001b07780)                                                                                                                                                
+        /usr/local/go/src/net/http/server.go:1952 +0x8cd                                                                                                                                                    
+created by net/http.(*Server).Serve                                                                                                                                                                         
+        /usr/local/go/src/net/http/server.go:3013 +0x39b                 
+
+        
+                                                                                                                                           
+2021/05/02 13:43:32 http: panic serving 127.0.0.1:34952: runtime error: index out of range [0] with length 0                                                                                                
+goroutine 6673 [running]:
+net/http.(*conn).serve.func1(0xc00229c5a0)                                                                                                                                                                  
+        /usr/local/go/src/net/http/server.go:1824 +0x153                                                                                                                                                    
+panic(0x898420, 0xc0006bcf00)                                                                                                                                                                               
+        /usr/local/go/src/runtime/panic.go:971 +0x499                                                                                                                                                       
+main.createPeerConnection(0x958c30, 0xc00213a2a0, 0xc000613200)                                                                                                                                             
+        /home/ubuntu/rtmp-to-webrtc/main.go:80 +0x834                                                                                                                                                       
+net/http.HandlerFunc.ServeHTTP(0x8ed780, 0x958c30, 0xc00213a2a0, 0xc000613200)                                                                                                                              
+        /usr/local/go/src/net/http/server.go:2069 +0x44                                                                                                                                                     
+net/http.(*ServeMux).ServeHTTP(0xba4c20, 0x958c30, 0xc00213a2a0, 0xc000613200)                                                                                                                              
+        /usr/local/go/src/net/http/server.go:2448 +0x1ad                                                                                                                                                    
+net/http.serverHandler.ServeHTTP(0xc0000bc1c0, 0x958c30, 0xc00213a2a0, 0xc000613200)                                                                                                                        
+        /usr/local/go/src/net/http/server.go:2887 +0xa3                                                                                                                                                     
+net/http.(*conn).serve(0xc00229c5a0, 0x959e20, 0xc001e814c0)                                                                                                                                                
+        /usr/local/go/src/net/http/server.go:1952 +0x8cd                                                                                                                                                    
+created by net/http.(*Server).Serve                                                                                                                                                                         
+        /usr/local/go/src/net/http/server.go:3013 +0x39b

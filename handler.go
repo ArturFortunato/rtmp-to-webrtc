@@ -27,9 +27,12 @@ type Handler struct {
 }
 
 func (h *Handler) AddNewClient(streamID string, audioTrack, videoTrack *webrtc.Track) error {
-	pubsub, err := h.relayService.GetPubsub(streamID)
+
+	var pubsub *Pubsub
+	var err error
+	pubsub, err = h.relayService.GetPubsub(streamID)
 	if err != nil {
-		return errors.Wrap(err, "Failed to get pubsub")
+		pubsub, err = h.relayService.NewPubsub(streamID)
 	}
 
 	sub := pubsub.Sub(audioTrack, videoTrack)
@@ -37,6 +40,7 @@ func (h *Handler) AddNewClient(streamID string, audioTrack, videoTrack *webrtc.T
 
 	h.sub = sub
 
+	log.Println("NOVO subs")
 	return nil
 }
 
@@ -63,9 +67,15 @@ func (h *Handler) OnPublish(_ *rtmp.StreamContext, timestamp uint32, cmd *rtmpms
 		return errors.New("PublishingName is empty")
 	}
 
-	pubsub, err := h.relayService.NewPubsub(cmd.PublishingName)
+	var pubsub *Pubsub
+	var err error
+	pubsub, err = h.relayService.GetPubsub(cmd.PublishingName)
+
 	if err != nil {
-		return errors.Wrap(err, "Failed to create pubsub")
+		pubsub, err = h.relayService.NewPubsub(cmd.PublishingName)
+		if err != nil {
+			return errors.Wrap(err, "Failed to create pubsub")
+		}
 	}
 
 	pub := pubsub.Pub()
@@ -104,7 +114,8 @@ func (h *Handler) OnAudio(timestamp uint32, payload io.Reader, streamID uint32) 
 		return err
 	}
 
-	eventID := strconv.FormatUint(uint64(streamID), 10) 
+	eventID := strconv.FormatUint(uint64(streamID), 10)
+	// eventID := streamID
 	pubsub, _ := h.relayService.GetPubsub(eventID)
 
 	_ = pubsub.GetPub().Publish(&flvtag.FlvTag{
@@ -147,14 +158,14 @@ func (h *Handler) OnVideo(timestamp uint32, payload io.Reader, streamID uint32) 
 
 	video.Data = data
 
-	eventID := strconv.FormatUint(uint64(streamID), 10) 
+	eventID := strconv.FormatUint(uint64(streamID), 10)
 	pubsub, _ := h.relayService.GetPubsub(eventID)
 
 	_ = pubsub.GetPub().Publish(&flvtag.FlvTag{
-			TagType:   flvtag.TagTypeVideo,
-			Timestamp: timestamp,
-			Data:      &video,
-		},
+		TagType:   flvtag.TagTypeVideo,
+		Timestamp: timestamp,
+		Data:      &video,
+	},
 		outBuf,
 	)
 
